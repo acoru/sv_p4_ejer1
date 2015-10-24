@@ -1,3 +1,9 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+
+
 public class Volt_divider
 {
 	protected double vcc = 0, vref = 0, r1 = 0, r2 = 0;
@@ -69,4 +75,42 @@ public class Volt_divider
 	{
 		return this.r2;
 	}
-}
+
+
+	public Volt_divider(DataInputStream dis){
+		try{
+			this.vcc=dis.readDouble();
+			this.vref=dis.readDouble();
+			this.r1=dis.readDouble();
+			this.r2=dis.readDouble();
+
+		}catch (IOException e){
+			this.vcc=0.0;
+			this.vref=0.0;
+			this.r1=0.0;
+			this.r2=0.0;
+
+			e.printStackTrace();
+		}
+	}
+
+	
+
+
+	public void toByteArray (DataOutputStream dos){
+		try{
+			dos.writeDouble(this.vcc);
+			dos.writeDouble(this.vref);
+			dos.writeDouble(this.r1);
+			dos.writeDouble(this.r2);
+		}catch (IOException e){
+			e.printStackTrace();
+		}
+		
+	}
+
+	public String toString(){
+		return vcc+" "+vref+" "+r1+" "+r2;
+	}
+
+}	
