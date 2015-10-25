@@ -76,15 +76,21 @@ public class Volt_divider
 		return this.r2;
 	}
 
-
-	public Volt_divider(DataInputStream dis){
-		try{
+	//taking the values recieved from the network connection
+	//this method is used for reading the content recieved from the network
+	//it's similar to a buffer in
+	public Volt_divider(DataInputStream dis)
+	{
+		try
+		{
+			//setting the content of the DataInputStream into the attributes of the class
 			this.vcc=dis.readDouble();
 			this.vref=dis.readDouble();
 			this.r1=dis.readDouble();
 			this.r2=dis.readDouble();
-
-		}catch (IOException e){
+		}
+		catch(IOException e)
+		{
 			this.vcc=0.0;
 			this.vref=0.0;
 			this.r1=0.0;
@@ -94,23 +100,28 @@ public class Volt_divider
 		}
 	}
 
-	
-
-
-	public void toByteArray (DataOutputStream dos){
-		try{
+	//casting the content of the atributes into a array of bytes (DataOutputStream) (writting the content of the attributes into
+	//the DataOutStream, it's similar to a buffer out)
+	public void toByteArray (DataOutputStream dos)
+	{
+		try
+		{
 			dos.writeDouble(this.vcc);
 			dos.writeDouble(this.vref);
 			dos.writeDouble(this.r1);
 			dos.writeDouble(this.r2);
-		}catch (IOException e){
+		}
+		catch(IOException e)
+		{
 			e.printStackTrace();
 		}
 		
 	}
 
-	public String toString(){
-		return vcc+" "+vref+" "+r1+" "+r2;
+	//putting the attributes values into a string value (returning as String value)
+	public String toString()
+	{
+		return vcc + " " + vref + " " + r1 + " " + r2;
 	}
 
 }	
