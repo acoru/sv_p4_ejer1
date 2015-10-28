@@ -40,8 +40,8 @@ public class Message
 
 		try
 		{
-			dos.writeInt(sequency);
-			vd.toByteArray(dos);
+			dos.writeInt(sequence);
+			voldi.toByteArray(dos);
 			dos.close();
 			return bos.toByteArray();
 		}
@@ -58,8 +58,8 @@ public class Message
 	//the receivedSecuence attribute and a Volt_divider "voldi" attribute
 	public Message(String data, byte[] bytedata)
 	{
-		ByteArrayInputStream bais = ByteArrayInputStream(bytedata);
-		DataInputStream dis = new DataOutputStream(bais);
+		ByteArrayInputStream bais = new ByteArrayInputStream(bytedata);
+		DataInputStream dis = new DataInputStream(bais);
 		try
 		{
 			this.receivedSequence=dis.readInt();
@@ -70,10 +70,10 @@ public class Message
 			ex.printStackTrace();
 		}
 		String[] fields = data.split(" ");
-		if(fields.lengths == 5)
+		if(fields.length == 5)
 		{
-			receivedSequency = Integer.parseInt(fields[0]);
-			voldi = new Volt_divider(fields[1], fields[2], fields[3], fields[4]); 
+			receivedSequence = Integer.parseInt(fields[0]);
+			voldi = new Volt_divider(Double.parseDouble(fields[1]), Double.parseDouble(fields[2]), Double.parseDouble(fields[3]), Double.parseDouble(fields[4])); 
 		}
 	}
 	//just for getting the message
@@ -86,5 +86,4 @@ public class Message
 	{
 		this.message = message;
 	}
-
 }

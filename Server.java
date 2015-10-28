@@ -41,15 +41,18 @@ public class Server
 		return this.pass;
 	}
 
-	public int domain_l()
+	public String domain_l()
 	{
 		return domain_l;
 	}
 
 	//for closing the session
-	public closeSession()
+	public void closeSession()
 	{
-		Server.close();
+		user = "";
+		pass = "";
+		domain_l = "";
+		port = 0;
 	}
 
 	

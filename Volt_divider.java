@@ -18,7 +18,7 @@ public class Volt_divider
 
 	public void calc_vcc()
 	{
-		this.vcc = this.vref * ((this.r1 + this.r2) / this.r2)
+		this.vcc = this.vref * ((this.r1 + this.r2) / this.r2);
 	}
 
 	public void calc_vref()
@@ -26,14 +26,14 @@ public class Volt_divider
 		this.vref = this.vcc * (this.r2 / (this.r1 + this.r2));
 	}
 
-	public void calc r1()
+	public void calc_r1()
 	{
 		this.r1 = (this.vcc / this.vref - 1) * this.r2;
 	}
 
-	public void calc r2()
+	public void calc_r2()
 	{
-		this.r2 = (this.r1 / (this.vcc / this.vref - 1))
+		this.r2 = (this.r1 / (this.vcc / this.vref - 1));
 	}
 
 	public void set_vcc(double vcc)
