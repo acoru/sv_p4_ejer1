@@ -1,38 +1,72 @@
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 
 public class Message
 {
-	//static int squence for managing a global sequence number for all the object of this Message class
+	//static integer sequence for managing a global sequence number for all the object of this Message class
 	protected static int sequence;
+	protected int id;	//it'll identify the type of message
+	private int receivedId;
 	protected int receivedSequence;
 	protected String message = "";
 	protected Volt_divider voldi = null;
+	private String receivedData = "";
+	private String login, password, domain_l;
+	private int port;
 
-
-	public void Message(Volt_divider vd)
+	//create a message login request, it must be the first client message
+	public Message(String login, String pass, String domail_l, int port)
 	{
-		//it'll construct the message from an internal sequence number and a Volt_divider object
-		voldi=vd;
-		message=sequence +" "+ vd.toString();	//calling toString method from the Volt_divider class for
-												//taking the attibutes content of Volt_divider class
+		id = 1;
+		message = id + " " + sequence + " " + login + " " + pass + " " + domail_l + " " + port;
 		sequence++;
-		/*	
-		this.vd = vd;
-		this.vcc = Double.toString(this.vd.get_vcc());
-		this.vref = Double.toString(this.vd.get_vref());
-		this.r1 = Double.toString(this.vd.get_r1());
-		this.r2 = Double.toString(this.vd.get_r2());
-		message = "Vcc: " + this.vcc + " Vref: " + this.vref + " R1: " + this.r1 + " R2: " + this.r2;
-		*/
+	}
+	
+	//message response for a login, server will send an OK message to the client
+	//this message is use as the server message constructor, it must be the first server message
+	//the response String must be a "LOGIN OK" or "INVALID LOGIN" response, it must be implemented
+	//on server side
+	public void loginResponse(String response)
+	{
+		id = 100;
+		message = id + " " + sequence + " " + response;
+		sequence++;
+	}
+	
+	//logout request message from the client side
+	public void logoutMessageRequest()
+	{
+		id = 0;
+		message = id + " " + sequence + " LOGOUT";
+		sequence++;
+	}
+	
+	//logout message response from the server side
+	public void logoutMessageResponse()
+	{
+		id = 100;
+		message = id + " " + sequence + " BYE";
+		sequence++;
 	}
 
-	//trying to create a "buffer out" method, it'll be used for sending
-	//the data throw the net
+	//create a message for requesting and responding a Volt_divider action
+	public void voldiCalculate(int id, Volt_divider vd)
+	{
+		//it'll construct the message from an internal sequence number and a Volt_divider object
+		this.id = id;
+		voldi = vd;
+		message = id + " " + sequence + " " + vd.toString();	//calling toString method from the Volt_divider class for
+												//taking the attributes content of Volt_divider class
+		sequence++;
+	}
+
+	//creating a "buffer out" method, it'll be used for sending
+	//the data through the net to the client or the server
 	public byte[] toByteArray()
 	{
 		ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
@@ -40,9 +74,9 @@ public class Message
 
 		try
 		{
-			dos.writeInt(sequence);
-			voldi.toByteArray(dos);
-			dos.close();
+			//just take the content of the message string and put into the DataOutputStream
+			dos.writeChars(message);
+			//for returning the message string as a byte array
 			return bos.toByteArray();
 		}
 		catch (IOException e)
@@ -53,35 +87,79 @@ public class Message
 	}
 
 
-	//it works as a buffer in, the String data is the recieved data from the net
-	//it'll split the data variable and will get the values for setting inside
-	//the receivedSecuence attribute and a Volt_divider "voldi" attribute
-	public Message(String data, byte[] bytedata)
+	/*it works as a buffer in, the String data is the received data from the net
+	* it'll split the data variable and will get the values for setting inside
+	* the receivedSecuence attribute and a Volt_divider "voldi" attribute
+	* message request from the client id between 1 and 99
+	* message response from the server from 101 to 199
+	* example: if a user request the login, it will be used the id = 1, then,
+	* the server will response to this request from the client with an id = 101
+	* it'll be necessary a later use of the getMessage method for taking the content of the message string
+	* id = 0 for logout request and id = 100 for logout response
+	*/
+	public Message(byte[] bytedata)
 	{
+		//converting the input byte array into a string for later use
 		ByteArrayInputStream bais = new ByteArrayInputStream(bytedata);
-		DataInputStream dis = new DataInputStream(bais);
+		BufferedReader in = new BufferedReader(new InputStreamReader(bais));
 		try
 		{
-			this.receivedSequence=dis.readInt();
-
+			receivedData = in.readLine();
 		}
 		catch (IOException ex)
 		{
 			ex.printStackTrace();
 		}
-		String[] fields = data.split(" ");
-		if(fields.length == 5)
+		
+		String[] fields = receivedData.split(" ");
+		receivedId = Integer.parseInt(fields[0]);
+		switch(receivedId)
 		{
-			receivedSequence = Integer.parseInt(fields[0]);
-			voldi = new Volt_divider(Double.parseDouble(fields[1]), Double.parseDouble(fields[2]), Double.parseDouble(fields[3]), Double.parseDouble(fields[4])); 
+			case 0:	//logout request
+				receivedSequence = Integer.parseInt(fields[1]);
+				message = receivedId + " " + receivedSequence + fields[2];
+				break;
+			case 1:	//login request message
+				receivedSequence = Integer.parseInt(fields[1]);
+				login = fields[2];
+				password = fields[3];
+				domain_l = fields[4];
+				port = Integer.parseInt(fields[5]);
+				message = receivedId + " " + receivedSequence + " " + login + " " + password + " " + domain_l + " " + port;
+				break;
+			case 2:
+			case 3:
+			case 4:
+			case 5:	//Vold_divider request calculation message
+				receivedSequence = Integer.parseInt(fields[1]);
+				voldi = new Volt_divider(Double.parseDouble(fields[2]), Double.parseDouble(fields[3]), Double.parseDouble(fields[4]), Double.parseDouble(fields[5])); 
+				message = receivedId + " " + receivedSequence + " " + voldi.toString();
+				break;
+			case 100:	//logout message response
+				receivedSequence = Integer.parseInt(fields[1]);
+				message = receivedId + " " + receivedSequence + fields[2];
+				break;
+			case 101:	//login message response
+				receivedSequence = Integer.parseInt(fields[1]);
+				message = receivedId + " " + receivedSequence + " " + fields[2] + " " + fields[3];
+				break;
+			case 102:
+			case 103:
+			case 104:
+			case 105:	//Volt_divider response calculation message
+				receivedSequence = Integer.parseInt(fields[1]);
+				voldi = new Volt_divider(Double.parseDouble(fields[2]), Double.parseDouble(fields[3]), Double.parseDouble(fields[4]), Double.parseDouble(fields[5])); 
+				message = receivedId + " " + receivedSequence + " " + voldi.toString();
+				break;
 		}
 	}
 	//just for getting the message
+	//NOTE: this method must be use every time after a buffer in message for getting the content of the message
 	public String getMessage()
 	{
-		return this.message;
+		return message;
 	}
-	//just for setting a message
+	//just for setting a message, just for testing purpose
 	public void setMessage(String message)
 	{
 		this.message = message;

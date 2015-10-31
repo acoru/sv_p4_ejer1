@@ -76,8 +76,8 @@ public class Volt_divider
 		return this.r2;
 	}
 
-	//taking the values recieved from the network connection
-	//this method is used for reading the content recieved from the network
+	//taking the values received from the network connection
+	//this method is used for reading the content received from the network
 	//it's similar to a buffer in
 	public Volt_divider(DataInputStream dis)
 	{
@@ -100,7 +100,7 @@ public class Volt_divider
 		}
 	}
 
-	//casting the content of the atributes into a array of bytes (DataOutputStream) (writting the content of the attributes into
+	//casting the content of the attributes into a array of bytes (DataOutputStream) (writting the content of the attributes into
 	//the DataOutStream, it's similar to a buffer out)
 	public void toByteArray (DataOutputStream dos)
 	{
@@ -115,13 +115,11 @@ public class Volt_divider
 		{
 			e.printStackTrace();
 		}
-		
 	}
-
+	
 	//putting the attributes values into a string value (returning as String value)
 	public String toString()
 	{
 		return vcc + " " + vref + " " + r1 + " " + r2;
 	}
-
 }	

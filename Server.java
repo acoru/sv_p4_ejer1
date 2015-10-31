@@ -1,6 +1,6 @@
 public class Server
 {
-	/*	Login class that will be use for auth in the system.
+	/*	Login class that will be use for authentication in the system.
 	*	It contains multiples attributes:
 	*	user: an attribute that will contain the user name
 	*	pass: it'll contain the password of the user
