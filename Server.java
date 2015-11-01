@@ -1,3 +1,9 @@
+/**
+ * 
+ * @author Adrián Cotes Ruiz & María Linarejos González Ginés
+ * this class must be used by the server for managing the data received from the client and for doing the pertinent
+ * actions by the received request action of the client and responding to these message received from the client side
+ */
 public class Server
 {
 	/*	Login class that will be use for authentication in the system.
@@ -19,14 +25,23 @@ public class Server
 	protected Volt_divider voldi = null;
 	protected byte[] buffer_out;
 	
-	//this is the constructor that must be called first for creating the session
+	/**
+	 * this is the constructor that must be called first for creating the session, it's just for testing
+	 * because the real communication between the server and the client must be through message send through the
+	 * network
+	 * @param user the user login
+	 * @param pass the user password
+	 */
 	public Server(String user, String pass)
 	{
 		this.user = user;
 		this.pass = pass;
 	}
 	
-	//constructor for the buffer in (data received from the client)
+	/**
+	 * constructor for the buffer in (data received from the client)
+	 * @param bytedata the message received from the user
+	 */
 	public Server(byte[] bytedata)
 	{
 		mess = new Message(bytedata);
@@ -39,19 +54,35 @@ public class Server
 	 * on the server side, to obtain the byte array that must be send through the network to the client
 	 */
 	
+	/**
+	 * this method is used for responding to the client for a correct login, thats mean that the login data
+	 * send by the user is correct
+	 * once the automaticRequestedAction has been called and return an id = 1 (login request), and once on the server
+	 * side has been checked that the login is correct or incorrect, the correcLogin or incorrectLogin must be called
+	 * on the server side, to obtain the byte array that must be send through the network to the client
+	 * @return the message that will be send through the network as a byte array
+	 */
 	public byte[] correctLogin()
 	{
 		mess.loginResponse(200);
 		return mess.toByteArray();
 	}
 	
+	/**
+	 * this method is used for responding to the client for a incorrect login, thats mean that the login data
+	 * send by the user is incorrect
+	 * once the automaticRequestedAction has been called and return an id = 1 (login request), and once on the server
+	 * side has been checked that the login is correct or incorrect, the correcLogin or incorrectLogin must be called
+	 * on the server side, to obtain the byte array that must be send through the network to the client
+	 * @return the message that will be send through the network as a byte array
+	 */
 	public byte[] incorrectLogin()
 	{
 		mess.loginResponse(404);
 		return mess.toByteArray();
 	}
 	
-	/*
+	/**
 	* this method will be use for an automatic action for a request
 	* note that, the login request, can not be an automatic action, it'll save the request message from the client
 	* into the message String attribute, so that the server must call to getMessage method to obtain the request login
@@ -59,6 +90,7 @@ public class Server
 	* to the correctLogin method or incorrectLogin method.
 	* if the returned id code is id != 0, then server just need to call to the getBufferOut method to obtain the 
 	* byte array of the message that can be send through the net
+	* @return the id of the requested action from the client
 	*/
 	public int automaticRequestedAction()
 	{
@@ -120,44 +152,77 @@ public class Server
 		return receivedId;
 	}
 	
-	//once the user is authenticated on the system, it can be set a domain and a port
+	/**
+	 * once the user is authenticated on the system, it can be set a domain and a port
+	 * for testing purpose
+	 * @param domain_l the domain of the server
+	 */
 	public void setDomain(String domain_l)
 	{
 		this.domain_l = domain_l;
 	}
-
+	/**
+	 * once the user is authenticated on the system, it can be set a domain and a port
+	 * for testing purpose
+	 * @param port the port of the domain
+	 */
 	public void setPort(int port)
 	{
 		this.port = port;
 	}
 
-	//if it's necessary, user can obtain the login data.
+	/**
+	 * if it's necessary, user can obtain the login data.
+	 * just for testing
+	 * @return login information
+	 */
 	public String getUser()
 	{
 		return this.user;
 	}
 
+	/**
+	 * if it's necessary, user can obtain the login data.
+	 * just for testing
+	 * @return login information
+	 */
 	public String getPass()
 	{
 		return this.pass;
 	}
 
+	/**
+	 * if it's necessary, user can obtain the login data.
+	 * just for testing
+	 * @return login information
+	 */
 	public String domain_l()
 	{
 		return domain_l;
 	}
-	
+
+	/**
+	 * if it's necessary, user can obtain the login data.
+	 * just for testing
+	 * @return login information
+	 */
 	public String getMessage()
 	{
 		return message;
 	}
 	
+	/**
+	 * for getting the message created for responding to the client
+	 * @return the message for responding to the client, as a byte array
+	 */
 	public byte[] getBufferOut()
 	{
 		return buffer_out;
 	}
 
-	//for closing the session
+	/**
+	 * for closing the session
+	 */
 	public void closeSession()
 	{
 		user = "";
