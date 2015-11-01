@@ -18,22 +18,22 @@ public class Volt_divider
 
 	public void calc_vcc()
 	{
-		this.vcc = this.vref * ((this.r1 + this.r2) / this.r2);
+		vcc = vref * ((r1 + r2) / r2);
 	}
 
 	public void calc_vref()
 	{
-		this.vref = this.vcc * (this.r2 / (this.r1 + this.r2));
+		vref = vcc * (r2 / (r1 + r2));
 	}
 
 	public void calc_r1()
 	{
-		this.r1 = (this.vcc / this.vref - 1) * this.r2;
+		r1 = (vcc / vref - 1) * r2;
 	}
 
 	public void calc_r2()
 	{
-		this.r2 = (this.r1 / (this.vcc / this.vref - 1));
+		r2 = (r1 / (vcc / vref - 1));
 	}
 
 	public void set_vcc(double vcc)
@@ -58,22 +58,22 @@ public class Volt_divider
 
 	public double get_vcc()
 	{
-		return this.vcc;
+		return vcc;
 	}
 
 	public double get_vref()
 	{
-		return this.vref;
+		return vref;
 	}
 
 	public double get_r1()
 	{
-		return this.r1;
+		return r1;
 	}
 
 	public double get_r2()
 	{
-		return this.r2;
+		return r2;
 	}
 
 	//taking the values received from the network connection
@@ -84,17 +84,17 @@ public class Volt_divider
 		try
 		{
 			//setting the content of the DataInputStream into the attributes of the class
-			this.vcc=dis.readDouble();
-			this.vref=dis.readDouble();
-			this.r1=dis.readDouble();
-			this.r2=dis.readDouble();
+			vcc=dis.readDouble();
+			vref=dis.readDouble();
+			r1=dis.readDouble();
+			r2=dis.readDouble();
 		}
 		catch(IOException e)
 		{
-			this.vcc=0.0;
-			this.vref=0.0;
-			this.r1=0.0;
-			this.r2=0.0;
+			vcc=0.0;
+			vref=0.0;
+			r1=0.0;
+			r2=0.0;
 
 			e.printStackTrace();
 		}
@@ -106,10 +106,10 @@ public class Volt_divider
 	{
 		try
 		{
-			dos.writeDouble(this.vcc);
-			dos.writeDouble(this.vref);
-			dos.writeDouble(this.r1);
-			dos.writeDouble(this.r2);
+			dos.writeDouble(vcc);
+			dos.writeDouble(vref);
+			dos.writeDouble(r1);
+			dos.writeDouble(r2);
 		}
 		catch(IOException e)
 		{

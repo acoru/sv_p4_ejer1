@@ -29,12 +29,12 @@ public class Message
 	
 	//message response for a login, server will send an OK message to the client
 	//this message is use as the server message constructor, it must be the first server message
-	//the response String must be a "LOGIN OK" or "INVALID LOGIN" response, it must be implemented
+	//the response integer must be a 200 for "LOGIN OK" or 404 for "INVALID LOGIN" response, it must be implemented
 	//on server side
-	public void loginResponse(String response)
+	public void loginResponse(int response)
 	{
 		id = 100;
-		message = id + " " + sequence + " " + response;
+		message = id + " " + receivedSequence + " " + response;
 		sequence++;
 	}
 	
@@ -55,21 +55,68 @@ public class Message
 	}
 
 	//create a message for requesting and responding a Volt_divider action
-	public void voldiCalculate(int id, Volt_divider vd)
+	
+	/*
+	 * The following methods must be use for requesting and responding to Vold_divider calculating methods
+	 */
+	
+	public void requestVcc(Volt_divider vd)
 	{
-		//it'll construct the message from an internal sequence number and a Volt_divider object
-		this.id = id;
-		voldi = vd;
-		message = id + " " + sequence + " " + vd.toString();	//calling toString method from the Volt_divider class for
-												//taking the attributes content of Volt_divider class
+		id = 2;
+		message = id + " " + sequence + " " + vd.toString();
 		sequence++;
 	}
-
+	
+	public void responseVcc(Volt_divider vd)
+	{
+		id = 2;
+		message = id + " " + receivedSequence + " " + vd.toString();
+	}
+	
+	public void requestVref(Volt_divider vd)
+	{
+		id = 3;
+		message = id + " " + sequence + " " + vd.toString();
+		sequence++;
+	}
+	
+	public void responseVref(Volt_divider vd)
+	{
+		id = 3;
+		message = id + " " + receivedSequence + " " + vd.toString();
+	}
+	
+	public void requestR1(Volt_divider vd)
+	{
+		id = 4;
+		message = id + " " + sequence + " " + vd.toString();
+		sequence++;
+	}
+	
+	public void responseR1(Volt_divider vd)
+	{
+		id = 4;
+		message = id + " " + receivedSequence + " " + vd.toString();
+	}
+	
+	public void requestR2(Volt_divider vd)
+	{
+		id = 5;
+		message = id + " " + sequence + " " + vd.toString();
+		sequence++;
+	}
+	
+	public void responseR2(Volt_divider vd)
+	{
+		id = 5;
+		message = id + " " + receivedSequence + " " + vd.toString();
+	}
+	
 	//creating a "buffer out" method, it'll be used for sending
 	//the data through the net to the client or the server
 	public byte[] toByteArray()
 	{
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream(24);
 		DataOutputStream dos = new DataOutputStream(bos);
 
 		try
@@ -117,7 +164,7 @@ public class Message
 		{
 			case 0:	//logout request
 				receivedSequence = Integer.parseInt(fields[1]);
-				message = receivedId + " " + receivedSequence + fields[2];
+				message = receivedId + " " + receivedSequence + " " + fields[2];
 				break;
 			case 1:	//login request message
 				receivedSequence = Integer.parseInt(fields[1]);
@@ -141,7 +188,7 @@ public class Message
 				break;
 			case 101:	//login message response
 				receivedSequence = Integer.parseInt(fields[1]);
-				message = receivedId + " " + receivedSequence + " " + fields[2] + " " + fields[3];
+				message = receivedId + " " + receivedSequence + " " + fields[2];
 				break;
 			case 102:
 			case 103:
