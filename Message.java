@@ -49,7 +49,7 @@ public class Message
 	 */
 	public void loginResponse(int response)
 	{
-		id = 100;
+		id = 101;
 		message = id + " " + receivedSequence + " " + response;
 		sequence++;
 	}
